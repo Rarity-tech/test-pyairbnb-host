@@ -8,7 +8,7 @@ from datetime import datetime
 # ============================================
 TEST_HOSTS = [
     {
-        "id": "6967528",
+        "id": "174672201",
         "description": "Host public connu (exemple de la doc)"
     },
     {
