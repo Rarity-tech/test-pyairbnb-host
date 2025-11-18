@@ -60,7 +60,7 @@ print("🚀" * 40)
 # TEST 1 : API KEY
 # ============================================================
 print("\n" + "🔑" * 40)
-print("TEST 1 : pyairbnb.get_api_key()")
+print("TEST 1 : pyairbnb.get_api_key(PROXY_URL)")
 print("🔑" * 40)
 
 try:
