@@ -3,9 +3,9 @@ import json
 import time
 from datetime import datetime
 
-# ============================================================
-# 🎯 PARAMÈTRES DE LA ZONE (DOWNTOWN DUBAI)
-# ============================================================
+# =================================================================
+# ZONE DOWNTOWN DUBAI — bounding box stable
+# =================================================================
 NE_LAT = 25.2109
 NE_LONG = 55.2850
 SW_LAT = 25.1880
@@ -15,72 +15,50 @@ ZOOM_VALUE = 13
 PROXY_URL = ""
 LANGUAGE = "en"
 
-# ============================================================
-# 📊 FONCTION D'AFFICHAGE
-# ============================================================
+# =================================================================
+# Dates OBLIGATOIRES (mais on les rend très larges pour maximiser)
+# =================================================================
+CHECK_IN = "2025-01-15"
+CHECK_OUT = "2025-01-16"
+
+PRICE_MIN = 0
+PRICE_MAX = 20000   # très large = remonte presque tout
+
+# =================================================================
 def print_result(title, data, error=None):
-    print("\n" + "=" * 80)
+    print("\n" + "="*80)
     print(f"📦 {title}")
-    print("=" * 80)
-    
+    print("="*80)
     if error:
         print(f"❌ ERREUR: {error}")
-        print("=" * 80 + "\n")
         return
-    
-    print("✅ SUCCÈS")
-    print("\n🔍 TYPE:", type(data).__name__)
-    
-    if data is None:
-        print("⚠️ Résultat: None")
-    elif isinstance(data, list):
+    print("✅ SUCCÈS\n")
+    if isinstance(data, list):
         print(f"📋 Nombre d’éléments: {len(data)}")
         if len(data) > 0:
             print("\n🔍 Premier élément:")
             print(json.dumps(data[0], indent=2, ensure_ascii=False))
-        # Si tu veux TOUT voir, décommente la ligne suivante :
-        # print("\n📄 LISTE COMPLÈTE:")
-        # print(json.dumps(data, indent=2, ensure_ascii=False))
-    elif isinstance(data, dict):
-        print("\n📋 Dictionnaire:")
-        print(json.dumps(data, indent=2, ensure_ascii=False))
     else:
-        print(data)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
 
-    print("=" * 80 + "\n")
+# =================================================================
+print("🚀 TEST DOWNTOWN — pyairbnb 2.1.1")
 
-# ============================================================
-# 🚀 DÉBUT TEST
-# ============================================================
-print("\n" + "🚀" * 40)
-print(f"🧪 TEST PYAIRBNB — LISTINGS DOWNTOWN SANS DATES")
-print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-print("🚀" * 40)
-
-# ============================================================
-# TEST 1 : API KEY (JUSTE POUR VOIR)
-# ============================================================
-print("\n" + "🔑" * 40)
-print("TEST 1 : pyairbnb.get_api_key()")
-print("🔑" * 40)
-
+# =================================================================
+# TEST API KEY
+# =================================================================
 try:
     api_key = pyairbnb.get_api_key(PROXY_URL)
-    print_result("API KEY", {"api_key": api_key, "length": len(api_key)})
+    print_result("API KEY", {"value": api_key})
 except Exception as e:
     print_result("API KEY", None, error=str(e))
-    # On continue quand même, search_all n'utilise pas api_key en paramètre
     api_key = None
 
-time.sleep(2)
+time.sleep(1)
 
-# ============================================================
-# TEST 2 : SEARCH_ALL SANS DATES
-# ============================================================
-print("\n" + "🌍" * 40)
-print("TEST 2 : search_all() — Downtown, sans dates")
-print("🌍" * 40)
-
+# =================================================================
+# TEST SEARCH_ALL — Downtown, dates fictives
+# =================================================================
 try:
     listings = pyairbnb.search_all(
         ne_lat=NE_LAT,
@@ -88,26 +66,24 @@ try:
         sw_lat=SW_LAT,
         sw_long=SW_LONG,
         zoom_value=ZOOM_VALUE,
-        proxy_url=PROXY_URL,
+        check_in=CHECK_IN,
+        check_out=CHECK_OUT,
+        price_min=PRICE_MIN,
+        price_max=PRICE_MAX,
         language=LANGUAGE,
-        # pas de check_in / check_out pour avoir le max de listings
+        proxy_url=PROXY_URL,
     )
-
-    print_result("LISTINGS — DOWNTOWN (NO DATES)", listings)
-
+    print_result("LISTINGS — DOWNTOWN", listings)
 except Exception as e:
-    listings = None
-    print_result("LISTINGS — DOWNTOWN (NO DATES)", None, error=str(e))
+    print_result("LISTINGS — DOWNTOWN", None, error=str(e))
+    listings = []
 
-# ============================================================
+# =================================================================
 # RÉSUMÉ
-# ============================================================
-print("\n" + "🎉" * 40)
-print("📊 RÉSUMÉ")
-print("🎉" * 40)
-
-print(f"Listings trouvés : {len(listings) if isinstance(listings, list) else 0}")
-print(f"Zoom utilisé : {ZOOM_VALUE}")
-print(f"Zone NE → ({NE_LAT}, {NE_LONG})")
-print(f"Zone SW → ({SW_LAT}, {SW_LONG})")
-print("🎉" * 40)
+# =================================================================
+print("\n" + "🎉"*40)
+print(f"Listings trouvés : {len(listings)}")
+print(f"Dates utilisées : {CHECK_IN} → {CHECK_OUT}")
+print(f"Prix min/max     : {PRICE_MIN} / {PRICE_MAX}")
+print(f"Zoom             : {ZOOM_VALUE}")
+print("🎉"*40)
