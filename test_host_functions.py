@@ -1,4 +1,4 @@
-from pyairbnb import Api
+from pyairbnb import AirbnbAPI
 from datetime import datetime, timedelta
 
 # ---------------------------------------------------------
@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 # ---------------------------------------------------------
 API_KEY = "d306zoyjsyarp7ifhu67rjxn52tv0t20"
 
-# Downtown Dubai
 LAT = 25.195
 LNG = 55.276
 
@@ -20,7 +19,7 @@ PRICE_MAX = 20000
 # ---------------------------------------------------------
 # INIT API
 # ---------------------------------------------------------
-api = Api(api_key=API_KEY)
+api = AirbnbAPI(api_key=API_KEY)
 
 print("🚀 TEST DOWNTOWN — pyairbnb 2.1.1\n")
 
@@ -73,14 +72,13 @@ except Exception as e:
     exit()
 
 # ---------------------------------------------------------
-# DETAILS POUR LES PREMIERS LISTINGS
+# DETAILS
 # ---------------------------------------------------------
 print("\n" + "="*80)
 print("📦 DÉTAILS — PREMIERS LISTINGS")
 print("="*80)
 
 try:
-    # On limite volontairement à 3 listings pour éviter les logs massifs
     sample = listings[:3]
 
     for idx, item in enumerate(sample):
@@ -96,7 +94,6 @@ try:
 
         try:
             details = api.get_listing_details(listing_id)
-
             print("🧩 DETAILS COMPLETS:")
             print(details)
 
