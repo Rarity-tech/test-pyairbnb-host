@@ -1,4 +1,4 @@
-from pyairbnb import AirbnbAPI
+from pyairbnb import Api
 from datetime import datetime, timedelta
 
 # ---------------------------------------------------------
@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 # ---------------------------------------------------------
 API_KEY = "d306zoyjsyarp7ifhu67rjxn52tv0t20"
 
+# Downtown Dubai (zone précise)
 LAT = 25.195
 LNG = 55.276
 
@@ -19,7 +20,7 @@ PRICE_MAX = 20000
 # ---------------------------------------------------------
 # INIT API
 # ---------------------------------------------------------
-api = AirbnbAPI(api_key=API_KEY)
+api = Api(api_key=API_KEY)
 
 print("🚀 TEST DOWNTOWN — pyairbnb 2.1.1\n")
 
@@ -72,33 +73,31 @@ except Exception as e:
     exit()
 
 # ---------------------------------------------------------
-# DETAILS
+# DETAILS POUR LES PREMIERS LISTINGS (SURCOUCHE)
 # ---------------------------------------------------------
 print("\n" + "="*80)
 print("📦 DÉTAILS — PREMIERS LISTINGS")
 print("="*80)
 
 try:
-    sample = listings[:3]
+    sample = listings[:3]  # on limite à 3
 
     for idx, item in enumerate(sample):
         print(f"\n--- 🔎 DETAILS LISTING #{idx+1} ---")
 
         listing_id = item.get("id")
 
-        if not listing_id:
-            print("⚠️ Listing sans ID, ignoré.")
+        if listing_id is None:
+            print("⚠️ Pas d’ID trouvé")
             continue
 
-        print("➡️ ID:", listing_id)
+        print("➡️ ID trouvé:", listing_id)
 
-        try:
-            details = api.get_listing_details(listing_id)
-            print("🧩 DETAILS COMPLETS:")
-            print(details)
+        # LA SEULE CORRECTION : la méthode correcte
+        details = api.get_details(listing_id)
 
-        except Exception as err_details:
-            print(f"❌ ÉCHEC RÉCUP DETAILS POUR {listing_id}: {err_details}")
+        print("🧩 DETAILS COMPLETS:")
+        print(details)
 
 except Exception as e:
     print("❌ ERREUR DETAILS:", e)
@@ -108,7 +107,7 @@ except Exception as e:
 # ---------------------------------------------------------
 print("\n" + "🎉"*40)
 print(f"Listings trouvés : {len(listings)}")
-print(f"Dates            : {CHECKIN} → {CHECKOUT}")
+print(f"Dates utilisées : {CHECKIN} → {CHECKOUT}")
 print(f"Prix min/max     : {PRICE_MIN} / {PRICE_MAX}")
 print(f"Zoom             : {ZOOM}")
 print("🎉"*40)
