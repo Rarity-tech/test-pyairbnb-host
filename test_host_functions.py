@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 # ---------------------------------------------------------
 API_KEY = "d306zoyjsyarp7ifhu67rjxn52tv0t20"
 
-# Downtown Dubai (zone précise)
+# Downtown Dubai
 LAT = 25.195
 LNG = 55.276
 
@@ -72,34 +72,36 @@ except Exception as e:
     print("❌ ERREUR LISTINGS:", e)
     exit()
 
-
 # ---------------------------------------------------------
-# DETAILS POUR LES PREMIERS LISTINGS (SURCOUCHE)
+# DETAILS POUR LES PREMIERS LISTINGS
 # ---------------------------------------------------------
 print("\n" + "="*80)
 print("📦 DÉTAILS — PREMIERS LISTINGS")
 print("="*80)
 
 try:
-    # On limite à 3 pour ne pas flooder les logs
+    # On limite volontairement à 3 listings pour éviter les logs massifs
     sample = listings[:3]
 
     for idx, item in enumerate(sample):
         print(f"\n--- 🔎 DETAILS LISTING #{idx+1} ---")
 
-        # L’ID réel est dans item["id"]
         listing_id = item.get("id")
 
-        if listing_id is None:
-            print("⚠️ Pas d’ID trouvé")
+        if not listing_id:
+            print("⚠️ Listing sans ID, ignoré.")
             continue
 
-        print("➡️ ID trouvé:", listing_id)
+        print("➡️ ID:", listing_id)
 
-        details = api.get_listing_details(listing_id)
+        try:
+            details = api.get_listing_details(listing_id)
 
-        print("🧩 DETAILS COMPLETS:")
-        print(details)
+            print("🧩 DETAILS COMPLETS:")
+            print(details)
+
+        except Exception as err_details:
+            print(f"❌ ÉCHEC RÉCUP DETAILS POUR {listing_id}: {err_details}")
 
 except Exception as e:
     print("❌ ERREUR DETAILS:", e)
@@ -109,7 +111,7 @@ except Exception as e:
 # ---------------------------------------------------------
 print("\n" + "🎉"*40)
 print(f"Listings trouvés : {len(listings)}")
-print(f"Dates utilisées : {CHECKIN} → {CHECKOUT}")
+print(f"Dates            : {CHECKIN} → {CHECKOUT}")
 print(f"Prix min/max     : {PRICE_MIN} / {PRICE_MAX}")
 print(f"Zoom             : {ZOOM}")
 print("🎉"*40)
