@@ -5,7 +5,6 @@ from datetime import datetime, timedelta
 # CONFIG
 # ---------------------------------------------------------
 
-# Centre approximatif de Downtown Dubai (ton point de départ)
 LAT = 25.195
 LNG = 55.276
 
@@ -17,13 +16,12 @@ PRICE_MIN    = 0
 PRICE_MAX    = 20000
 CURRENCY     = "AED"
 LANGUAGE     = "en"
-PROXY_URL    = ""          # laisse vide si pas de proxy
-PLACE_TYPE   = ""          # "Entire home/apt" / "Private room" / "" pour tout
-AMENITIES    = []          # ex: [4,7] si tu veux filtrer, sinon vide
-FREE_CANCEL  = False       # True si tu veux uniquement annulation flexible
+PROXY_URL    = ""
+PLACE_TYPE   = ""
+AMENITIES    = []
+FREE_CANCEL  = False
 
-# Pour transformer ton point (LAT, LNG) en petite "boîte" autour
-DELTA = 0.02  # ~ petite zone autour de Downtown
+DELTA = 0.02
 
 
 # ---------------------------------------------------------
@@ -31,10 +29,6 @@ DELTA = 0.02  # ~ petite zone autour de Downtown
 # ---------------------------------------------------------
 
 def build_bbox_from_center(lat, lng, delta=0.02):
-    """
-    À partir d'un point (lat, lng), construit un petit rectangle
-    nord-est / sud-ouest compatible avec pyairbnb.search_all().
-    """
     ne_lat = lat + delta
     ne_long = lng + delta
     sw_lat = lat - delta
@@ -43,14 +37,9 @@ def build_bbox_from_center(lat, lng, delta=0.02):
 
 
 def extract_room_id_and_url(listing: dict):
-    """
-    Essaie de récupérer un room_id et/ou une URL depuis la structure du listing.
-    On ne casse pas tout si une clé manque : on teste plusieurs possibilités.
-    """
     if not isinstance(listing, dict):
         return None, None
 
-    # Différentes variantes possibles selon la structure
     room_id = (
         listing.get("id")
         or listing.get("room_id")
@@ -74,7 +63,6 @@ def extract_room_id_and_url(listing: dict):
 
 print("🚀 TEST DOWNTOWN — pyairbnb 2.1.1\n")
 
-# 1) BBOX pour search_all
 ne_lat, ne_long, sw_lat, sw_long = build_bbox_from_center(LAT, LNG, DELTA)
 
 print("="*80)
@@ -86,6 +74,7 @@ print(f"Dates          : {CHECKIN} → {CHECKOUT}")
 print(f"Prix min / max : {PRICE_MIN} / {PRICE_MAX}")
 print(f"Zoom value     : {ZOOM_VALUE}")
 print("")
+
 
 # 2) SEARCH ALL
 print("\n" + "="*80)
@@ -113,7 +102,6 @@ try:
 
     print("✅ SUCCÈS search_all()\n")
 
-    # Selon la lib, ça peut retourner une liste directe ou un dict {"results": [...]}
     if isinstance(listings, dict) and "results" in listings:
         results = listings["results"]
     else:
@@ -142,7 +130,7 @@ print("📦 DÉTAILS — PREMIERS LISTINGS (pyairbnb.get_details)")
 print("="*80)
 
 try:
-    sample = results[:3]  # on limite à 3 listings
+    sample = results[:3]
 
     for idx, item in enumerate(sample, start=1):
         print(f"\n--- 🔎 DETAILS LISTING #{idx} ---")
@@ -156,7 +144,6 @@ try:
         print("➡️ room_id :", room_id)
         print("➡️ room_url:", room_url)
 
-        # On essaye d'abord avec room_id, sinon avec room_url
         if room_id is not None:
             details = pyairbnb.get_details(
                 room_id=room_id,
@@ -173,14 +160,17 @@ try:
                 language=LANGUAGE,
             )
 
-        # On ne flood pas tout : on montre juste quelques clés
-                if isinstance(details, dict):
-            print("🧩 DETAILS — clés au 1er niveau:", list(details.keys()))
-        print("🧩 DETAILS COMPLETS (repr brut) :")
+        # ---------------------------------------------------------
+        # 🔥 SEULE PARTIE MODIFIÉE : ON AFFICHE TOUT LE DÉTAIL BRUT
+        # ---------------------------------------------------------
+        print("🧩 DETAILS — clés au 1er niveau:", list(details.keys()) if isinstance(details, dict) else "(non-dict)")
+        print("🧩 DETAILS COMPLETS (brut) :")
         print(details)
+        # ---------------------------------------------------------
 
 except Exception as e:
     print("❌ ERREUR DETAILS:", repr(e))
+
 
 # 4) RÉSUMÉ
 print("\n" + "🎉"*40)
