@@ -9,10 +9,10 @@ from datetime import datetime, timedelta
 LAT = 25.195
 LNG = 55.276
 
-CHECKIN  = "2025-01-15"
-CHECKOUT = "2025-01-16"
+CHECKIN  = "2025-11-19"
+CHECKOUT = "2026-03-16"
 
-ZOOM_VALUE   = 13
+ZOOM_VALUE   = 10
 PRICE_MIN    = 0
 PRICE_MAX    = 20000
 CURRENCY     = "AED"
