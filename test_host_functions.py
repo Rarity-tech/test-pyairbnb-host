@@ -174,12 +174,10 @@ try:
             )
 
         # On ne flood pas tout : on montre juste quelques clés
-        if isinstance(details, dict):
-            top_keys = list(details.keys())[:20]
-            print("🧩 DETAILS — clés au 1er niveau:", top_keys)
-        else:
-            print("🧩 DETAILS (type:", type(details), ")")
-            print(details)
+                if isinstance(details, dict):
+            print("🧩 DETAILS — clés au 1er niveau:", list(details.keys()))
+        print("🧩 DETAILS COMPLETS (repr brut) :")
+        print(details)
 
 except Exception as e:
     print("❌ ERREUR DETAILS:", repr(e))
