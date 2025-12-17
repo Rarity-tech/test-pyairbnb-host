@@ -1,7 +1,12 @@
-name: Test Host Functions
+name: Test Get Calendar
 
 on:
-  workflow_dispatch:  # Lancement manuel
+  workflow_dispatch:
+    inputs:
+      room_id:
+        description: 'Room ID Airbnb (ex: 30931885)'
+        required: true
+        type: string
 
 jobs:
   test:
@@ -21,6 +26,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run host tests
+      - name: Run calendar test
+        env:
+          ROOM_ID: ${{ github.event.inputs.room_id }}
         run: |
-          python test_host_functions.py
+          python test_calendar.py
