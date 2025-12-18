@@ -7,7 +7,7 @@ on:
         description: 'Max jours à tester par listing (0 = tous les jours dispo)'
         required: false
         type: number
-        default: 30
+        default: 0
       currency:
         description: 'Devise (USD, AED, EUR...)'
         required: false
@@ -42,8 +42,14 @@ jobs:
         run: |
           python scrape_prices.py
 
-      - name: Upload CSV artifact
+      - name: Upload Matrix CSV
         uses: actions/upload-artifact@v4
         with:
-          name: prices-data
-          path: prices_*.csv
+          name: prices-matrix
+          path: prices_matrix_*.csv
+
+      - name: Upload Details CSV
+        uses: actions/upload-artifact@v4
+        with:
+          name: prices-details
+          path: prices_details_*.csv
